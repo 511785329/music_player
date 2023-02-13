@@ -5,7 +5,7 @@ import { storeToRefs } from 'pinia';
 import { ref } from 'vue';
 import { watch } from 'vue';
     const store=useCounterStore()
-    const {playList,playListIndex,isbtnShow} = storeToRefs(store)
+    const {playList,playListIndex,isbtnShow,musicUrl} = storeToRefs(store)
     const audio=ref(null)
     function play (){
         if(audio.value.paused){
@@ -17,10 +17,9 @@ import { watch } from 'vue';
             audio.value.pause()
         } 
     }
-    watch(playList[playListIndex],()=>{
-        const {musicUrl} = storeToRefs(store)
+    watch(playList,()=>{
+        // const {musicUrl} = storeToRefs(store)
         // console.log(playList[playListIndex].id);
-        console.log(musicUrl[playListIndex].data.data[0].url)
         audio.value.play()
         
     })

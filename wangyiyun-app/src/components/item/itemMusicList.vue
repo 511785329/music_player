@@ -62,8 +62,6 @@ import { useCounterStore } from '../../stores/counter';
         store.updatePlayListIndex(index)
         // store.updateMusicList(props.itemlist)
         store.updateIsbtnShow(false)
-        console.log(playList);
-        console.log(musicUrl[playListIndex].data);
         // for(let i=0;i<props.itemlist.length-1;i++){
         //     let res =  getMusicItemList(props.itemlist[i].id)
         //     store.setMusicUrl(res,i)
