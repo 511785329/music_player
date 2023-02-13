@@ -6,6 +6,6 @@ import FooterMusic from './components/item/FooterMusic.vue';
 
 <template>
     <RouterView />
-    <FooterMusic />
+    <FooterMusica />
 </template>
 
