@@ -18,16 +18,16 @@ import { watch } from 'vue';
             audio.value.pause()
         } 
     }
-    watch(playListIndex, ()=>{
+    watch([playListIndex,playList], ()=>{
         play_music = musicUrl.value[playListIndex.value].data.data[0].url
         audio.value.load();
         audio.value.autoplay = true;
     })
-    watch(playList, ()=>{   //切换列表的时候确保第一首歌能播放
-        play_music = musicUrl.value[playListIndex.value].data.data[0].url
-        audio.value.load();
-        audio.value.autoplay = true;
-    })
+    // watch(, ()=>{   //切换列表的时候确保第一首歌能播放
+    //     play_music = musicUrl.value[playListIndex.value].data.data[0].url
+    //     audio.value.load();
+    //     audio.value.autoplay = true;
+    // })
 </script>
 <template>
     <div class="FooterMusic">

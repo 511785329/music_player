@@ -110,7 +110,7 @@
         padding: 0;
         /* 宽度被router-link的a标签class覆盖掉了 */
         /* width: 2.3rem; */
-        font-size: 0.1rem;
+        font-size: 0.2rem;
     }
     a{
         color: black;
