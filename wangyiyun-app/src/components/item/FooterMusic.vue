@@ -7,6 +7,7 @@ import { watch } from 'vue';
     const store=useCounterStore()
     const {playList,playListIndex,isbtnShow,musicUrl} = storeToRefs(store)
     const audio=ref(null)
+    
     function play (){
         if(audio.value.paused){
             store.updateIsbtnShow(false)
@@ -17,10 +18,12 @@ import { watch } from 'vue';
             audio.value.pause()
         } 
     }
-    watch(playList,()=>{
+    watch(playListIndex,()=>{
         // const {musicUrl} = storeToRefs(store)
         // console.log(playList[playListIndex].id);
-        audio.value.play()
+        console.log(audio);
+        audio.value.load();
+        audio.value.autoplay = true;
     })
 </script>
 <template>
@@ -43,8 +46,9 @@ import { watch } from 'vue';
                 <use xlink:href="#icon-24gf-playlist"></use>
             </svg>
         </div>
-        <audio ref="audio" >
-            <source :src="musicUrl[playListIndex].data.data[0].url">
+        <audio ref="audio">
+            <!-- :src="musicUrl[playListIndex].data.data[0].url" -->
+            <source :src="musicUrl[playListIndex].data.data[0].url"> 
         </audio>
     </div>
 </template>
