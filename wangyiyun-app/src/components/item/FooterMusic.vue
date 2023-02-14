@@ -21,15 +21,14 @@ import { watch } from 'vue';
         // const {musicUrl} = storeToRefs(store)
         // console.log(playList[playListIndex].id);
         audio.value.play()
-        
     })
 </script>
 <template>
     <div class="FooterMusic">
         <div class="footerLeft">
-            <img :src="playList[playListIndex].al.picUrl" alt="">
+            <img :src="playList[playListIndex].al.picUrl" alt=""> <!--专辑封面al.picUrl-->
             <div>
-                <span class="musicName">{{ playList[playListIndex].al.name }}</span>
+                <span class="musicName">{{ playList[playListIndex].name }}</span>
                 <span>横滑可以切换上下首</span>
             </div>
         </div>
