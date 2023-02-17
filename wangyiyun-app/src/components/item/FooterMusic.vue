@@ -4,9 +4,14 @@ import { useCounterStore } from '../../stores/counter';
 import { storeToRefs } from 'pinia';
 import { ref } from 'vue';
 import { watch } from 'vue';
+import MusicDetail from './MusicDetail.vue'
+    components: {
+        MusicDetail
+    }
     const store=useCounterStore()
     const {playList,playListIndex,isbtnShow,musicUrl} = storeToRefs(store)
-    const audio=ref(null)
+    const audio = ref(null)
+    const showBottom = ref(false)
     var play_music = ""
     function play(){
         if(audio.value.paused){
@@ -18,11 +23,19 @@ import { watch } from 'vue';
             audio.value.pause()
         } 
     }
+    // 监听歌单歌曲并点击播放
     watch([playListIndex,playList], ()=>{
+        // console.log(playList);
         play_music = musicUrl.value[playListIndex.value].data.data[0].url
         audio.value.load();
         audio.value.autoplay = true;
     })
+    function musicDetail() {
+        showBottom.value = true
+    }
+    function closePopup(){
+        showBottom.value = false
+    }
     // watch(, ()=>{   //切换列表的时候确保第一首歌能播放
     //     play_music = musicUrl.value[playListIndex.value].data.data[0].url
     //     audio.value.load();
@@ -31,7 +44,7 @@ import { watch } from 'vue';
 </script>
 <template>
     <div class="FooterMusic">
-        <div class="footerLeft">
+        <div class="footerLeft" @click="musicDetail()">
             <img :src="playList[playListIndex].al.picUrl" alt=""> <!--专辑封面al.picUrl-->
             <div>
                 <span class="musicName">{{ playList[playListIndex].name }}</span>
@@ -53,6 +66,14 @@ import { watch } from 'vue';
             <!-- :src="musicUrl[playListIndex].data.data[0].url" -->
             <source :src="play_music"> 
         </audio>
+        <van-popup
+            v-model:show="showBottom"
+            position="bottom"
+            :style="{ height: '100%' }"
+            @click="closePopup()"
+        >
+            <MusicDetail :musiclist="playList[playListIndex]"/>
+        </van-popup>
     </div>
 </template>
 <style scoped>
