@@ -12,6 +12,7 @@ import MusicDetail from './MusicDetail.vue'
     const {playList,playListIndex,isbtnShow,musicUrl,showBottom} = storeToRefs(store)
     const audio = ref(null)
     var play_music = ""
+    
     function play(){
         if(audio.value.paused){
             store.updateIsbtnShow(false)

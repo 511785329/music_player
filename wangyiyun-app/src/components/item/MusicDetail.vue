@@ -65,11 +65,12 @@ import { ref,reactive } from 'vue';
     }
     // 解析歌词 拿到时间和歌词存放在对象数组里
     function formatLyric(lyric){
-        // if(item === '') return
+        console.log(lyric);
         const regNewLine = /\n/
         const lineArr = lyric.split(regNewLine)
         const regTime = /\[\d{2}:\d{2}.\d{2,3}\]/
         lineArr.forEach(item => {
+            if(item === '') return
             const obj = {}
             const time = item.match(regTime)
             // console.log(item.split(']')[1]);
