@@ -4,7 +4,9 @@ import { useCounterStore } from '../../stores/counter';
 import { storeToRefs } from 'pinia';
 // import { onMounted } from 'vue';
 import 'vue3-marquee/dist/style.css'
-import { ref } from 'vue';
+import { ref,reactive } from 'vue';
+    const lyricObjArr = reactive([
+    ])
     const isLyricShow = ref(false)
     const store = useCounterStore()
     const {isbtnShow,currentTime,lyric} = storeToRefs(store)
@@ -63,19 +65,18 @@ import { ref } from 'vue';
     }
     // 解析歌词 拿到时间和歌词存放在对象数组里
     function formatLyric(lyric){
-        const lyricObjArr = [] 
+        // if(item === '') return
         const regNewLine = /\n/
         const lineArr = lyric.split(regNewLine)
         const regTime = /\[\d{2}:\d{2}.\d{2,3}\]/
         lineArr.forEach(item => {
             const obj = {}
             const time = item.match(regTime)
-
-            obj.lyric = item.split(']')[1].trim()
+            // console.log(item.split(']')[1]);
+            obj.lyric = item.split(']')[1] ? item.split(']')[1].trim() : ""
             obj.time = time ? formatLyricTime(time[0].slice(1, time[0].length - 1)) : 0
             lyricObjArr.push(obj)
         });
-        if(item === '') return lyricObjArr
     }
     function formatLyricTime(time){ // 格式化歌词的时间 转换成 sss.ms
         const regMin = /.*:/
@@ -118,14 +119,14 @@ import { ref } from 'vue';
                 </svg>
             </div>
         </div>
-        <div class="musicListContent" v-show="!isLyricShow" @click="isLyricShow=true">
+        <div class="musicListContent" v-show="!isLyricShow" @click="isLyricShow=true,formatLyric(lyric)">
             <img  class="img_recode" src="../../assets/record.png"  alt=""/>
             <img class="img_needle" src="../../assets/needle.png" :class="{img_needle_active:isbtnShow}" alt=""/>
             <img class="img_al" :src="musiclist.al.picUrl" :class="{img_al_play:!isbtnShow,img_al_pasue:isbtnShow}" alt=""/>
         </div>
         <div class="musicLyric"  v-show="isLyricShow" @click="isLyricShow=false">
-            <span v-for="(item,index) in formatLyric(lyric)" :key="item">
-                {{ item[index].lyric }}
+            <span v-for="(item,index) in lyricObjArr" :key="item">
+                {{ item.lyric }}
             </span>
         </div>
         <div class="detailFooter">
