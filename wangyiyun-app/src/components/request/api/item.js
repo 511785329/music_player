@@ -20,3 +20,10 @@ export function getMusicUrl(data) {
 		url: `/song/url/v1?id=${data}&level=standard`,
 	});
 }
+// 获取歌词
+export function getMusicLyric(data) {
+	return service({
+		method: "GET",
+		url: `/lyric?id=${data}`,
+	});
+}

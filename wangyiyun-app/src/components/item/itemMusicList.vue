@@ -114,6 +114,7 @@ import { useCounterStore } from '../../stores/counter';
     }
     .itemList{
         width: 100%;
+        margin-bottom: 1.4rem;
     }
     .item{
         width: 100%;

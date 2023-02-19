@@ -9,9 +9,8 @@ import MusicDetail from './MusicDetail.vue'
         MusicDetail
     }
     const store=useCounterStore()
-    const {playList,playListIndex,isbtnShow,musicUrl} = storeToRefs(store)
+    const {playList,playListIndex,isbtnShow,musicUrl,showBottom} = storeToRefs(store)
     const audio = ref(null)
-    const showBottom = ref(false)
     var play_music = ""
     function play(){
         if(audio.value.paused){
@@ -25,17 +24,15 @@ import MusicDetail from './MusicDetail.vue'
     }
     // 监听歌单歌曲并点击播放
     watch([playListIndex,playList], ()=>{
+        store.setMusicLyric(playList.value[playListIndex.value].id)
         // console.log(playList);
         play_music = musicUrl.value[playListIndex.value].data.data[0].url
         audio.value.load();
         audio.value.autoplay = true;
     })
-    function musicDetail() {
-        showBottom.value = true
-    }
-    function closePopup(){
-        showBottom.value = false
-    }
+    // function musicDetail() {
+    //     showBottom.value = true
+    // }
     // watch(, ()=>{   //切换列表的时候确保第一首歌能播放
     //     play_music = musicUrl.value[playListIndex.value].data.data[0].url
     //     audio.value.load();
@@ -44,7 +41,7 @@ import MusicDetail from './MusicDetail.vue'
 </script>
 <template>
     <div class="FooterMusic">
-        <div class="footerLeft" @click="musicDetail()">
+        <div class="footerLeft" @click="store.updatePopup">
             <img :src="playList[playListIndex].al.picUrl" alt=""> <!--专辑封面al.picUrl-->
             <div>
                 <span class="musicName">{{ playList[playListIndex].name }}</span>
@@ -62,7 +59,7 @@ import MusicDetail from './MusicDetail.vue'
                 <use xlink:href="#icon-24gf-playlist"></use>
             </svg>
         </div>
-        <audio ref="audio">
+        <audio ref="audio" @timeupdate = "store.updateTime(audio.currentTime)">
             <!-- :src="musicUrl[playListIndex].data.data[0].url" -->
             <source :src="play_music"> 
         </audio>
@@ -70,9 +67,12 @@ import MusicDetail from './MusicDetail.vue'
             v-model:show="showBottom"
             position="bottom"
             :style="{ height: '100%' }"
-            @click="closePopup()"
         >
-            <MusicDetail :musiclist="playList[playListIndex]"/>
+            <MusicDetail 
+            :musiclist = "playList[playListIndex]" 
+            :audioDuration = "audio.duration"
+            :play="play"
+            />
         </van-popup>
     </div>
 </template>

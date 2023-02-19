@@ -1,6 +1,6 @@
-import { ref, computed } from "vue";
+// import { ref, computed } from "vue";
 import { defineStore } from "pinia";
-
+import { getMusicLyric } from "../components/request/api/item";
 export const useCounterStore = defineStore("counter", {
 	state: () => {
 		return {
@@ -20,6 +20,9 @@ export const useCounterStore = defineStore("counter", {
 			isbtnShow: true,
 			playListIndex: 0,
 			musicUrl: [{}],
+			showBottom: false,
+			currentTime: 0,
+			lyric: "",
 		};
 	},
 	actions: {
@@ -34,6 +37,17 @@ export const useCounterStore = defineStore("counter", {
 		},
 		setMusicUrl(index, url) {
 			this.musicUrl[index] = url;
+		},
+		updatePopup() {
+			this.showBottom = !this.showBottom;
+		},
+		updateTime(time) {
+			this.currentTime = time;
+		},
+		// 获取歌词并存入仓库
+		async setMusicLyric(id) {
+			let res = await getMusicLyric(id);
+			this.lyric = res.data.lrc.lyric;
 		},
 	},
 });
