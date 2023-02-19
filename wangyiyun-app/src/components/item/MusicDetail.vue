@@ -77,6 +77,7 @@ import { ref,reactive } from 'vue';
             obj.time = time ? formatLyricTime(time[0].slice(1, time[0].length - 1)) : 0
             lyricObjArr.push(obj)
         });
+        console.log(lyricObjArr);
     }
     function formatLyricTime(time){ // 格式化歌词的时间 转换成 sss.ms
         const regMin = /.*:/
@@ -375,5 +376,13 @@ import { ref,reactive } from 'vue';
         align-items: center;
         overflow: scroll;
         position: relative;
+    }
+    .musicLyric span{
+        text-align: center;
+        margin-top: 0.2rem;
+        color: rgba(205,205,205,0.6);
+    }
+    .musicLyric-active{
+        color: #FFFFFF;
     }
 </style>
