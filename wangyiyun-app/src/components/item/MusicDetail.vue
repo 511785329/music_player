@@ -4,12 +4,14 @@ import { useCounterStore } from '../../stores/counter';
 import { storeToRefs } from 'pinia';
 // import { onMounted } from 'vue';
 import 'vue3-marquee/dist/style.css'
-import { ref,reactive } from 'vue';
-    const lyricObjArr = reactive([
-    ])
+import { ref,reactive,watch } from 'vue';
+    // const lyricObjArr = reactive([
+    // ])
+    const musicLyricScroll = ref()
     const isLyricShow = ref(false)
     const store = useCounterStore()
-    const {isbtnShow,currentTime,lyric} = storeToRefs(store)
+    const {isbtnShow,currentTime,lyric,lyricString} = storeToRefs(store)
+    let currentRow
     components:{
         Vue3Marquee
     }
@@ -17,6 +19,16 @@ import { ref,reactive } from 'vue';
     // watch(audioCurrentTime,()=>{
 
     // })
+    watch(currentTime,()=>{
+            lyricString.value.forEach((item,index)=>{
+                // console.log(currentTime,item.time);
+                if(currentTime.value>= item.time-0.3 && currentTime.value<= item.time+0.3){
+                    // console.log(currentTime.value,item.time);
+                    currentRow = index
+                    musicLyricScroll.value.scrollTop = index*34
+                }
+            }) 
+    })
     // 将当前歌曲时间处理为进度百分比
     function progrss(time,duration){
         if(time == 0)
@@ -64,35 +76,60 @@ import { ref,reactive } from 'vue';
         }
     }
     // 解析歌词 拿到时间和歌词存放在对象数组里
-    function formatLyric(lyric){
-        console.log(lyric);
-        const regNewLine = /\n/
-        const lineArr = lyric.split(regNewLine)
-        const regTime = /\[\d{2}:\d{2}.\d{2,3}\]/
-        lineArr.forEach(item => {
-            if(item === '') return
-            const obj = {}
-            const time = item.match(regTime)
-            // console.log(item.split(']')[1]);
-            obj.lyric = item.split(']')[1] ? item.split(']')[1].trim() : ""
-            obj.time = time ? formatLyricTime(time[0].slice(1, time[0].length - 1)) : 0
-            lyricObjArr.push(obj)
-        });
-        console.log(lyricObjArr);
-    }
-    function formatLyricTime(time){ // 格式化歌词的时间 转换成 sss.ms
-        const regMin = /.*:/
-        const regSec = /:.*\./
-        const regMs = /\./
-
-        const min = parseInt(time.match(regMin)[0].slice(0, 2))
-        let sec = parseInt(time.match(regSec)[0].slice(1, 3))
-        const ms = time.slice(time.match(regMs).index + 1, time.match(regMs).index + 3)
-        if (min !== 0) {
-            sec += min * 60
+    // function formatLyric(lyric){
+    //     console.log(lyric);
+    //     const regNewLine = /\n/
+    //     const lineArr = lyric.split(regNewLine)
+    //     const regTime = /\[\d{2}:\d{2}.\d{2,3}\]/
+    //     lineArr.forEach(item => {
+    //         if(item === '') return
+    //         const obj = {}
+    //         const time = item.match(regTime)
+    //         // console.log(item.split(']')[1]);
+    //         obj.lyric = item.split(']')[1] ? item.split(']')[1].trim() : ""
+    //         obj.time = time ? formatLyricTime(time[0].slice(1, time[0].length - 1)) : 0
+    //         lyricObjArr.push(obj)
+    //     });
+    //     console.log(lyricObjArr);
+    // }
+    //传入初始歌词文本text
+    function formatLyric(text) {
+        const lyricArry = []
+        let arr = text.split("\n"); //原歌词文本已经换好行了方便很多，我们直接通过换行符“\n”进行切割
+        let row = arr.length; //获取歌词行数
+        for (let i = 0; i < row; i++) {
+            let temp_row = arr[i]; //现在每一行格式大概就是这样"[00:04.302][02:10.00]hello world";
+            let temp_arr = temp_row.split("]");//我们可以通过“]”对时间和文本进行分离
+            let text = temp_arr.pop(); //把歌词文本从数组中剔除出来，获取到歌词文本了！
+            //再对剩下的歌词时间进行处理
+            temp_arr.forEach(element => {
+                let obj = {};
+                let time_arr = element.substr(1, element.length - 1).split(":");//先把多余的“[”去掉，再分离出分、秒
+                let s = parseInt(time_arr[0]) * 60 + Number(time_arr[1]); //把时间转换成与currentTime相同的类型，方便待会实现滚动效果
+                obj.time = s;
+                obj.text = text;
+                lyricArry.push(obj); //每一行歌词对象存到组件的lyric歌词属性里
+            });
         }
-        return Number(sec + '.' + ms)
+        lyricArry.sort(sortRule); //由于不同时间的相同歌词我们给排到一起了，所以这里要以时间顺序重新排列一下
+        store.setLyric(lyricArry) //把歌词提交到store里，为了重新进入该组件时还能再次渲染
     }
+    function sortRule(a, b) { //设置一下排序规则
+      return a.time - b.time;
+    }
+    // function formatLyricTime(time){ 
+    //     const regMin = /.*:/
+    //     const regSec = /:.*\./
+    //     const regMs = /\./
+
+    //     const min = parseInt(time.match(regMin)[0].slice(0, 2))
+    //     let sec = parseInt(time.match(regSec)[0].slice(1, 3))
+    //     const ms = time.slice(time.match(regMs).index + 1, time.match(regMs).index + 3)
+    //     if (min !== 0) {
+    //         sec += min * 60
+    //     }
+    //     return Number(sec + '.' + ms)
+    // }
 </script>
 <template>
     <img :src="musiclist.al.picUrl" alt="" class="bgimg"/>
@@ -126,9 +163,12 @@ import { ref,reactive } from 'vue';
             <img class="img_needle" src="../../assets/needle.png" :class="{img_needle_active:isbtnShow}" alt=""/>
             <img class="img_al" :src="musiclist.al.picUrl" :class="{img_al_play:!isbtnShow,img_al_pasue:isbtnShow}" alt=""/>
         </div>
-        <div class="musicLyric"  v-show="isLyricShow" @click="isLyricShow=false">
-            <span v-for="(item,index) in lyricObjArr" :key="item">
-                {{ item.lyric }}
+        <div class="musicLyric" ref="musicLyricScroll" v-show="isLyricShow" @click="isLyricShow=false">
+            <span v-for="(item,index) in lyricString" 
+            :key="item"
+            :class="{'musicLyric-active' : currentRow == index}"
+            >
+                {{ item.text }}
             </span>
         </div>
         <div class="detailFooter">
@@ -377,13 +417,14 @@ import { ref,reactive } from 'vue';
         align-items: center;
         overflow: scroll;
         position: relative;
+        padding: 3.5rem 0;
+        color: rgba(255,255,255,0.3);;
     }
     .musicLyric span{
         text-align: center;
-        margin-top: 0.2rem;
-        color: rgba(205,205,205,0.6);
+        margin-top: 0.2rem; 
     }
     .musicLyric-active{
-        color: #FFFFFF;
+        color: rgba(255,255,255,1);
     }
 </style>

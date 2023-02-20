@@ -23,6 +23,7 @@ export const useCounterStore = defineStore("counter", {
 			showBottom: false,
 			currentTime: 0,
 			lyric: "",
+			lyricString: [],
 		};
 	},
 	actions: {
@@ -48,6 +49,9 @@ export const useCounterStore = defineStore("counter", {
 		async setMusicLyric(id) {
 			let res = await getMusicLyric(id);
 			this.lyric = res.data.lrc.lyric;
+		},
+		setLyric(val) {
+			this.lyricString = val;
 		},
 	},
 });
