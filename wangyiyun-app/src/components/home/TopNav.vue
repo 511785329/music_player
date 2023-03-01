@@ -1,3 +1,10 @@
+<script setup>
+import { useRouter } from 'vue-router';
+    const router = useRouter()
+    function searchMusic(){
+        router.push('/search')
+    }
+</script>
 <template>
     <div class="topNav">
         <div class="topLeft">
@@ -12,7 +19,7 @@
             <span>视频</span>
         </div>
         <div class="topRight">
-            <svg class="icon" aria-hidden="true">
+            <svg class="icon" aria-hidden="true" @click="searchMusic()">
                 <use xlink:href="#icon-sousuo"></use>
             </svg>
         </div>

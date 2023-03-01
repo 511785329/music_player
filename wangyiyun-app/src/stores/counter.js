@@ -16,14 +16,14 @@ export const useCounterStore = defineStore("counter", {
 					},
 					id: 28916645,
 				},
-			],
-			isbtnShow: true,
-			playListIndex: 0,
-			musicUrl: [{}],
-			showBottom: false,
-			currentTime: 0,
-			lyric: "",
-			lyricString: [],
+			], //歌单全部歌曲对象数组
+			isbtnShow: true, //播放暂停按钮的显隐形
+			playListIndex: 0, //歌单歌曲下标
+			musicUrl: [{}], //歌曲的url
+			showBottom: false, //是否显示歌曲播放界面
+			currentTime: 0, //歌曲当前播放时间
+			lyric: "", //获取的歌曲歌词字符串流
+			lyricString: [], //处理后的歌词对象数组
 		};
 	},
 	actions: {

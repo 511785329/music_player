@@ -26,7 +26,6 @@ import MusicDetail from './MusicDetail.vue'
     // 监听歌单歌曲并点击播放
     watch([playListIndex,playList], ()=>{
         store.setMusicLyric(playList.value[playListIndex.value].id)
-        // console.log(playList);
         play_music = musicUrl.value[playListIndex.value].data.data[0].url
         audio.value.load();
         audio.value.autoplay = true;

@@ -10,7 +10,7 @@ import { ref,reactive,watch } from 'vue';
     const musicLyricScroll = ref()
     const isLyricShow = ref(false)
     const store = useCounterStore()
-    const {isbtnShow,currentTime,lyric,lyricString} = storeToRefs(store)
+    const {isbtnShow,currentTime,lyric,lyricString,playList,playListIndex} = storeToRefs(store)
     let currentRow
     components:{
         Vue3Marquee
@@ -130,6 +130,18 @@ import { ref,reactive,watch } from 'vue';
     //     }
     //     return Number(sec + '.' + ms)
     // }
+    function goPlay(val){
+        let index = playListIndex.value + val
+        console.log(index);
+        if(index < 0){
+            index = playList.value.length-1
+        } else if(index == playList.value.length ){
+            index = 0
+        }
+        store.updatePlayListIndex(index)
+        console.log(playListIndex.value);
+        
+    }
 </script>
 <template>
     <img :src="musiclist.al.picUrl" alt="" class="bgimg"/>
@@ -212,7 +224,7 @@ import { ref,reactive,watch } from 'vue';
                     <use xlink:href="#icon-xunhuan"></use>
                 </svg>
                 <!-- 上一首 -->
-                <svg class="icon" aria-hidden="true">
+                <svg class="icon" aria-hidden="true" @click="goPlay(-1)">
                     <use xlink:href="#icon-shangyishoushangyige"></use>
                 </svg>
                 <!-- 播放 -->
@@ -224,7 +236,7 @@ import { ref,reactive,watch } from 'vue';
                     <use xlink:href="#icon-zanting_bai-copy"></use>
                 </svg>
                 <!-- 下一首 -->
-                <svg class="icon" aria-hidden="true">
+                <svg class="icon" aria-hidden="true" @click="goPlay(1)">
                     <use xlink:href="#icon-xiayigexiayishou"></use>
                 </svg>
                 <!-- 列表 -->
@@ -412,8 +424,9 @@ import { ref,reactive,watch } from 'vue';
     .musicLyric{
         width: 100%;
         height: 8.5rem;
-        display: flex;
+        display:flex;;
         flex-direction: column;
+        /* justify-content: center; */
         align-items: center;
         overflow: scroll;
         position: relative;
@@ -421,8 +434,9 @@ import { ref,reactive,watch } from 'vue';
         color: rgba(255,255,255,0.3);;
     }
     .musicLyric span{
+        width: 80%;
         text-align: center;
-        margin-top: 0.2rem; 
+        margin-top: 0.3rem; 
     }
     .musicLyric-active{
         color: rgba(255,255,255,1);

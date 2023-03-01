@@ -46,9 +46,6 @@
             return (num/10000).toFixed(0) + "万"
         }
         return num
-    function changeMusic(item){
-        this.$router.push({ path: '/ItemMusic', query: { id:item.id } })
-    }        
     }
 </script>
 <style scoped>
