@@ -9,10 +9,6 @@ import{getItemList, getMusicItemList,getMusicUrl} from "../components/request/ap
 import itemMusicTop from "../components/item/itemMusicTop.vue"
 import itemMusicList from "../components/item/itemMusicList.vue";
 import { useCounterStore } from '../stores/counter.js';
-    components: {
-        itemMusicTop
-        itemMusicList
-    }
     const state=reactive({
         playlist:{},
         itemlist:[],
@@ -24,6 +20,7 @@ import { useCounterStore } from '../stores/counter.js';
         let result =await getItemList(id)
         state.playlist = res.data.playlist;
         state.itemlist = result.data.songs;
+        console.log(result);
         // 防止页面刷新，数据丢失，数据保存到sessionStorage中 
         sessionStorage.setItem('itemDetail',JSON.stringify(state))
         // 仓库存放歌单歌曲url

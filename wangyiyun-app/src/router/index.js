@@ -17,6 +17,16 @@ const router = createRouter({
 			// which is lazy-loaded when the route is visited.
 			component: () => import("../views/ItemMusic.vue"),
 		},
+		{
+			path: "/search",
+			name: "search",
+			component: () => import("../views/SearchView.vue"),
+		},
+		{
+			path: "/searchList",
+			name: "searchList",
+			component: () => import("../components/search/SearchList.vue"),
+		},
 	],
 });
 
